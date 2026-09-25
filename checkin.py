@@ -169,15 +169,15 @@ def parse_earned_points(message: str) -> int:
 
 
 def validate_cookie(cookie: str) -> Tuple[bool, str]:
-    """验证 Cookie 是否包含必要字段（按 ; 拆分 key 精确校验，避免子串误判）"""
+    """验证 Cookie 是否包含新版必要字段 gld:sess 与 gld:sess.sig（按 ; 拆分 key 精确校验）"""
     if not cookie or not cookie.strip():
         return False, "Cookie 为空"
     cookie = cookie.strip()
-    keys = {part.split("=", 1)[0].strip() for part in cookie.split(";") if part.strip()}
-    if "koa:sess" not in keys:
-        return False, "Cookie 缺少必要字段: koa:sess"
-    if "koa:sess.sig" not in keys:
-        return False, "Cookie 缺少必要字段: koa:sess.sig"
+    keys = {part.split("=", 1)[0].strip() for part in cookie.split(";") if "=" in part and part.strip()}
+    if "gld:sess" not in keys:
+        return False, "Cookie 缺少必要字段: gld:sess"
+    if "gld:sess.sig" not in keys:
+        return False, "Cookie 缺少必要字段: gld:sess.sig"
     return True, ""
 
 
